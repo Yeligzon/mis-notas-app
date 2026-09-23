@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZenWrite | Sistema Inteligente de Notas</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Chart.js for beautiful analytics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="src/css/style.css">
+</head>
+<body>
+
+  <!-- App Container -->
+  <div class="app-container">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="logo-icon">
+          <i class="fa-solid fa-feather-pointed"></i>
+        </div>
+        <span class="brand-name">ZenWrite</span>
+      </div>
+      
+      <button class="btn-new-note" id="btn-new-note-sidebar">
+        <i class="fa-solid fa-plus"></i>
+        <span>Nueva Nota</span>
+      </button>
+
+      <nav class="sidebar-menu">
+        <div class="menu-section">Navegación</div>
+        <a href="#" class="menu-item active" data-view="all">
+          <i class="fa-solid fa-cubes"></i>
+          <span>Todas las Notas</span>
+          <span class="badge" id="badge-all">0</span>
+        </a>
+        <a href="#" class="menu-item" data-view="pinned">
+          <i class="fa-solid fa-thumbtack"></i>
+          <span>Fijadas</span>
+          <span class="badge" id="badge-pinned">0</span>
+        </a>
+        <a href="#" class="menu-item" data-view="archived">
+          <i class="fa-solid fa-box-archive"></i>
+          <span>Archivadas</span>
+          <span class="badge" id="badge-archived">0</span>
+        </a>
+        <a href="#" class="menu-item" data-view="trash">
+          <i class="fa-solid fa-trash-can"></i>
+          <span>Papelera</span>
+          <span class="badge" id="badge-trash">0</span>
+        </a>
+        
+        <div class="menu-section">Categorías</div>
+        <div id="categories-list">
+          <!-- Dynamic Categories injected here -->
+        </div>
+
+        <div class="menu-section">Herramientas</div>
+        <a href="#" class="menu-item" id="menu-stats">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Estadísticas</span>
+        </a>
+        <a href="#" class="menu-item" id="menu-backup">
+          <i class="fa-solid fa-database"></i>
+          <span>Copia de Seguridad</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-profile">
+          <div class="avatar">U</div>
+          <div class="user-info">
+            <span class="user-name">Usuario Zen</span>
+            <span class="user-status">Local Sandbox</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      
+      <!-- Top Search & Filter Bar -->
+      <header class="top-bar">
+        <div class="search-wrapper">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <input type="text" id="search-input" placeholder="Buscar notas, tareas o etiquetas...">
+          <button class="clear-search-btn" id="clear-search" style="display: none;">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        
+        <div class="action-controls">
+          <div class="select-wrapper">
+            <select id="sort-select">
+              <option value="newest">Más recientes</option>
+              <option value="oldest">Más antiguas</option>
+              <option value="alphabetical">Alfabético (A-Z)</option>
+            </select>
+          </div>
+          
+          <button class="action-icon-btn" id="toggle-layout" title="Cambiar Vista">
+            <i class="fa-solid fa-grip-vertical"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Dynamic Workspace -->
+      <div class="workspace">
+        
+        <!-- Welcome Banner -->
+        <div class="welcome-banner">
+          <div class="banner-content">
+            <h1 id="welcome-title">¡Hola de nuevo! 👋</h1>
+            <p>Organiza tus ideas, tareas y proyectos en un entorno minimalista y veloz.</p>
+          </div>
+          <div class="banner-stats">
+            <div class="mini-stat-card">
+              <span class="num" id="stat-total-notes">0</span>
+              <span class="label">Notas</span>
+            </div>
+            <div class="mini-stat-card">
+              <span class="num" id="stat-total-words">0</span>
+              <span class="label">Palabras</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notes Grid / Container -->
+        <div class="notes-grid" id="notes-container">
+          <!-- Dynamically generated note cards go here -->
+        </div>
+
+        <!-- Empty State View -->
+        <div class="empty-state" id="empty-state-view" style="display: none;">
+          <div class="empty-icon">
+            <i class="fa-regular fa-folder-open"></i>
+          </div>
+          <h3>No encontramos notas aquí</h3>
+          <p>Crea una nueva nota para comenzar a capturar tus pensamientos.</p>
+          <button class="btn-new-note" id="btn-empty-state">
+            <i class="fa-solid fa-plus"></i>
+            <span>Comenzar ahora</span>
+          </button>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Note Editor Modal -->
+  <div class="modal-overlay" id="editor-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="category-selector-wrapper">
+          <span class="color-indicator" id="modal-color-indicator"></span>
+          <select id="modal-category-select">
+            <option value="Personal">Personal</option>
+            <option value="Trabajo">Trabajo</option>
+            <option value="Ideas">Ideas</option>
+            <option value="Importante">Importante</option>
+            <option value="Estudios">Estudios</option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button class="modal-action-btn" id="modal-pin-btn" title="Fijar Nota">
+            <i class="fa-solid fa-thumbtack"></i>
+          </button>
+          <button class="modal-close-btn" id="modal-close-btn">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+      
+      <div class="modal-body">
+        <input type="text" id="modal-title-input" class="editor-title" placeholder="Título de la nota..." autocomplete="off">
+        
+        <!-- Text formatting helper toolbar -->
+        <div class="editor-toolbar">
+          <button class="toolbar-btn" data-format="bold" title="Negrita (Ctrl+B)"><i class="fa-solid fa-bold"></i></button>
+          <button class="toolbar-btn" data-format="italic" title="Cursiva (Ctrl+I)"><i class="fa-solid fa-italic"></i></button>
+          <button class="toolbar-btn" data-format="list" title="Lista con viñetas"><i class="fa-solid fa-list-ul"></i></button>
+          <button class="toolbar-btn" data-format="code" title="Bloque de código"><i class="fa-solid fa-code"></i></button>
+          <button class="toolbar-btn voice-btn" id="voice-dictation-btn" title="Dictado por Voz (Speech-to-Text)">
+            <i class="fa-solid fa-microphone"></i>
+            <span class="pulse-ring"></span>
+          </button>
+        </div>
+
+        <textarea id="modal-content-input" class="editor-content" placeholder="Comienza a escribir tu obra maestra aquí..."></textarea>
+      </div>
+
+      <div class="modal-footer">
+        <div class="editor-metadata">
+          <span id="char-counter">0 caracteres</span>
+          <span class="dot-separator">•</span>
+          <span id="word-counter">0 palabras</span>
+        </div>
+        
+        <!-- Color palette selector -->
+        <div class="color-palette">
+          <button class="color-dot active" data-color="default" style="background-color: var(--card-bg);"></button>
+          <button class="color-dot" data-color="blue" style="background-color: rgba(59, 130, 246, 0.2);"></button>
+          <button class="color-dot" data-color="green" style="background-color: rgba(16, 185, 129, 0.2);"></button>
+          <button class="color-dot" data-color="purple" style="background-color: rgba(139, 92, 246, 0.2);"></button>
+          <button class="color-dot" data-color="red" style="background-color: rgba(239, 68, 68, 0.2);"></button>
+          <button class="color-dot" data-color="orange" style="background-color: rgba(245, 158, 11, 0.2);"></button>
+        </div>
+
+        <div class="footer-buttons">
+          <button class="btn-secondary" id="modal-cancel-btn">Descartar</button>
+          <button class="btn-primary" id="modal-save-btn">Guardar Nota</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistics Modal -->
+  <div class="modal-overlay" id="stats-modal">
+    <div class="modal-card stats-card">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-chart-pie"></i> Panel de Estadísticas</h3>
+        <button class="modal-close-btn" id="stats-close-btn">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body stats-grid-layout">
+        <div class="stat-box-summary">
+          <div class="metric-card">
+            <span class="metric-val" id="metric-total">0</span>
+            <span class="metric-lbl">Total Notas</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-val" id="metric-pinned">0</span>
+            <span class="metric-lbl">Fijadas</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-val" id="metric-archived">0</span>
+            <span class="metric-lbl">Archivadas</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-val" id="metric-words">0</span>
+            <span class="metric-lbl">Palabras Totales</span>
+          </div>
+        </div>
+        <div class="chart-container">
+          <canvas id="categoriesChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Backup & Restore Modal -->
+  <div class="modal-overlay" id="backup-modal">
+    <div class="modal-card backup-card">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-database"></i> Copia de Seguridad y Portabilidad</h3>
+        <button class="modal-close-btn" id="backup-close-btn">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="backup-description">Exporta todas tus notas en un archivo JSON portátil o restaura una copia anterior de manera instantánea.</p>
+        <div class="backup-actions-grid">
+          <div class="backup-box">
+            <i class="fa-solid fa-file-export backup-icon-large color-blue"></i>
+            <h4>Exportar Datos</h4>
+            <p>Descarga un archivo con todas tus notas de manera segura.</p>
+            <button class="btn-primary btn-full" id="btn-export-json">
+              <i class="fa-solid fa-download"></i> Exportar a JSON
+            </button>
+          </div>
+          <div class="backup-box">
+            <i class="fa-solid fa-file-import backup-icon-large color-purple"></i>
+            <h4>Importar Datos</h4>
+            <p>Sube un archivo .json guardado previamente para restaurar tu biblioteca.</p>
+            <div class="file-upload-wrapper">
+              <input type="file" id="import-file-input" accept=".json" style="display: none;">
+              <button class="btn-secondary btn-full" id="btn-trigger-import">
+                <i class="fa-solid fa-upload"></i> Seleccionar Archivo
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notifications -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Main JavaScript -->
+  <script src="src/js/script.js"></script>
+</body>
+</html>
