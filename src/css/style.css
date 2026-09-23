@@ -1,0 +1,167 @@
+/* ==========================================================================
+   ZENWRITE SYSTEM - STYLESHEET (ULTRA HIGH-FIDELITY MODERN DARK THEME)
+   ========================================================================== */
+
+:root {
+  /* Color Palette - Cyberpunk Dark Slate & Glassmorphism */
+  --bg-main: #090d16;
+  --bg-sidebar: #0f1524;
+  --card-bg: rgba(22, 30, 49, 0.65);
+  --card-border: rgba(255, 255, 255, 0.07);
+  --card-hover-border: rgba(99, 102, 241, 0.4);
+  
+  --text-primary: #f3f4f6;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+  
+  /* Vibrant Accent Gradients */
+  --accent-primary: #6366f1; /* Indigo */
+  --accent-secondary: #a855f7; /* Purple */
+  --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+  --accent-glow: rgba(99, 102, 241, 0.3);
+
+  /* Note Custom Theme Colors (Translucent) */
+  --note-default: rgba(22, 30, 49, 0.65);
+  --note-blue: rgba(59, 130, 246, 0.15);
+  --note-green: rgba(16, 185, 129, 0.15);
+  --note-purple: rgba(139, 92, 246, 0.15);
+  --note-red: rgba(239, 68, 68, 0.15);
+  --note-orange: rgba(245, 158, 11, 0.15);
+
+  --note-border-default: rgba(255, 255, 255, 0.07);
+  --note-border-blue: rgba(59, 130, 246, 0.4);
+  --note-border-green: rgba(16, 185, 129, 0.4);
+  --note-border-purple: rgba(139, 92, 246, 0.4);
+  --note-border-red: rgba(239, 68, 68, 0.4);
+  --note-border-orange: rgba(245, 158, 11, 0.4);
+
+  /* Utility Values */
+  --sidebar-width: 280px;
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --border-radius-lg: 16px;
+  --border-radius-md: 12px;
+  --border-radius-sm: 8px;
+}
+
+/* Base Reset & Typography */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+  overflow: hidden;
+  height: 100vh;
+}
+
+/* App Layout Grid */
+.app-container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+
+/* ==========================================================================
+   SIDEBAR COMPONENT
+   ========================================================================== */
+.sidebar {
+  width: var(--sidebar-width);
+  background-color: var(--bg-sidebar);
+  border-right: 1px solid var(--card-border);
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px;
+  z-index: 10;
+  flex-shrink: 0;
+  transition: var(--transition-smooth);
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 32px;
+  padding-left: 8px;
+}
+
+.logo-icon {
+  background: var(--accent-gradient);
+  width: 40px;
+  height: 40px;
+  border-radius: var(--border-radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px var(--accent-glow);
+}
+
+.logo-icon i {
+  color: #fff;
+  font-size: 1.2rem;
+}
+
+.brand-name {
+  font-weight: 800;
+  font-size: 1.3rem;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Interactive Create Button */
+.btn-new-note {
+  background: var(--accent-gradient);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--border-radius-md);
+  padding: 14px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.25);
+  margin-bottom: 24px;
+}
+
+.btn-new-note:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(99, 102, 241, 0.4);
+}
+
+.btn-new-note:active {
+  transform: translateY(0);
+}
+
+/* Navigation Menu */
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-grow: 1;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+/* Custom Scrollbars */
+.sidebar-menu::-webkit-scrollbar,
+.workspace::-webkit-scrollbar,
+.editor-content::-webkit-scrollbar {
+  width: 6px;
+}
+.sidebar-menu::-webkit-scrollbar-thumb,
+.workspace::-webkit-scrollbar-thumb,
+.editor-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
